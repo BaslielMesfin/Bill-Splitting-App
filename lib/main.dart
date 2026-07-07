@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'splitting_algorithm.dart';
+import 'package:camera/camera.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -433,6 +434,9 @@ class MainCanvas extends StatefulWidget {
 }
 
 class _MainCanvasState extends State<MainCanvas> {
+  CameraController? _cameraController;
+  List<CameraDescription> _cameras = [];
+  bool _cameraInitialized = false;
   String _activeScreen = 'home'; // home, capture, review, participants, assign, summary
   bool _loading = false;
   String? _errorMsg;
@@ -451,11 +455,34 @@ class _MainCanvasState extends State<MainCanvas> {
   void initState() {
     super.initState();
     appState.addListener(_onStateChange);
+    _initCamera();
+  }
+
+  Future<void> _initCamera() async {
+    try {
+      _cameras = await availableCameras();
+      if (_cameras.isNotEmpty) {
+        _cameraController = CameraController(
+          _cameras.first,
+          ResolutionPreset.max,
+          enableAudio: false,
+        );
+        await _cameraController!.initialize();
+        if (mounted) {
+          setState(() {
+            _cameraInitialized = true;
+          });
+        }
+      }
+    } catch (e) {
+      print("Camera initialization failed: $e");
+    }
   }
 
   @override
   void dispose() {
     appState.removeListener(_onStateChange);
+    _cameraController?.dispose();
     _apiKeyController.dispose();
     _firstNameController.dispose();
     _lastNameController.dispose();
@@ -467,6 +494,29 @@ class _MainCanvasState extends State<MainCanvas> {
   }
 
   // Launch camera snapshot
+  Future<void> _takePicture() async {
+    if (_cameraController == null || !_cameraController!.value.isInitialized) {
+      alert("Camera not initialized.");
+      return;
+    }
+    
+    setState(() {
+      _loading = true;
+      _errorMsg = null;
+    });
+
+    try {
+      final XFile file = await _cameraController!.takePicture();
+      appState.imagePath = file.path;
+      await _parseReceiptOCR(file.path);
+    } catch (e) {
+      setState(() {
+        _loading = false;
+        _errorMsg = "Failed to take photo: $e";
+      });
+    }
+  }
+
   Future<void> _pickImage(ImageSource source) async {
     final picker = ImagePicker();
     setState(() {
@@ -515,7 +565,7 @@ class _MainCanvasState extends State<MainCanvas> {
 
       // Configure Gemini Model Client
       final model = GenerativeModel(
-        model: 'gemini-1.5-flash',
+        model: 'gemini-2.5-flash',
         apiKey: appState.apiKey,
         generationConfig: GenerationConfig(
           responseMimeType: 'application/json',
@@ -1413,27 +1463,37 @@ Instructions:
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  // Alignment box
-                  Container(
-                    width: 260,
-                    height: 380,
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.3),
+                  if (_cameraInitialized && _cameraController != null)
+                    ClipRRect(
                       borderRadius: BorderRadius.circular(24),
-                      border: Border.all(color: Colors.white.withOpacity(0.3), width: 2, style: BorderStyle.solid),
+                      child: Container(
+                        width: 280,
+                        height: 400,
+                        child: CameraPreview(_cameraController!),
+                      ),
+                    ),
+                  // Alignment box overlay (always on top of camera)
+                  Container(
+                    width: 280,
+                    height: 400,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(color: Colors.white.withOpacity(0.4), width: 2),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(24.0),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.document_scanner, size: 40, color: Colors.white.withOpacity(0.8)),
-                          const SizedBox(height: 12),
-                          const Text(
-                            'Fit the receipt in frame — good lighting helps. Only ERCA standard receipts are supported.',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.white70, fontSize: 11),
-                          ),
+                          if (!_cameraInitialized) ...[
+                            Icon(Icons.document_scanner, size: 40, color: Colors.white.withOpacity(0.8)),
+                            const SizedBox(height: 12),
+                            const Text(
+                              'Fit the receipt in frame — good lighting helps. Only ERCA standard receipts are supported.',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Colors.white70, fontSize: 11),
+                            ),
+                          ],
                         ],
                       ),
                     ),
@@ -1523,7 +1583,7 @@ Instructions:
                     
                     // Native Shutter
                     GestureDetector(
-                      onTap: () => _pickImage(ImageSource.camera),
+                      onTap: () => _cameraInitialized ? _takePicture() : _pickImage(ImageSource.camera),
                       child: Container(
                         width: 72,
                         height: 72,
