@@ -46,6 +46,7 @@ class AppState extends ChangeNotifier {
   
   // Current Active Split State
   String receiptId = '';
+  double serviceChargeRate = 0.0;
   Receipt receipt = Receipt(subtotal: 0, serviceChargeAmount: 0, taxRate: 0.15, taxAmount: 0, total: 0);
   String merchantName = '';
   String? imagePath;
@@ -127,6 +128,10 @@ class AppState extends ChangeNotifier {
     double? total,
   }) {
     if (name != null) merchantName = name;
+    if (serviceCharge != null) {
+      final double sub = subtotal ?? receipt.subtotal;
+      serviceChargeRate = sub > 0 ? serviceCharge / sub : 0.0;
+    }
     receipt = Receipt(
       subtotal: subtotal ?? receipt.subtotal,
       serviceChargeAmount: serviceCharge ?? receipt.serviceChargeAmount,
@@ -175,7 +180,7 @@ class AppState extends ChangeNotifier {
 
   void _recalculateTotalsFromItems() {
     final double subtotal = lineItems.fold(0.0, (sum, item) => sum + item.amount);
-    final double serviceCharge = (subtotal * 0.1).roundToPlaces(2);
+    final double serviceCharge = (subtotal * serviceChargeRate).roundToPlaces(2);
     final double taxAmount = ((subtotal + serviceCharge) * receipt.taxRate).roundToPlaces(2);
     final double total = subtotal + serviceCharge + taxAmount;
 
@@ -1002,6 +1007,7 @@ Instructions:
               onPressed: () {
                 final double val = double.tryParse(valCtrl.text) ?? 0.0;
                 if (type == 'service') {
+                  appState.serviceChargeRate = appState.receipt.subtotal > 0 ? val / appState.receipt.subtotal : 0.0;
                   final newTax = ((appState.receipt.subtotal + val) * appState.receipt.taxRate).roundToPlaces(2);
                   final newTotal = appState.receipt.subtotal + val + newTax;
                   appState.setReceiptDetails(
