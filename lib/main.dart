@@ -67,6 +67,20 @@ class AppState extends ChangeNotifier {
     // Load API Key
     apiKey = prefs.getString('gemini_api_key') ?? '';
     
+    // If not in preferences, try reading from assets/env.json
+    if (apiKey.isEmpty) {
+      try {
+        final jsonStr = await rootBundle.loadString('assets/env.json');
+        final data = jsonDecode(jsonStr);
+        apiKey = data['GEMINI_API_KEY'] ?? '';
+        if (apiKey.isNotEmpty) {
+          await prefs.setString('gemini_api_key', apiKey);
+        }
+      } catch (_) {
+        // Asset file missing or invalid (this is fine, user will be prompted)
+      }
+    }
+    
     // Load Recent Participants
     final participantsJson = prefs.getString('recent_participants');
     if (participantsJson != null) {
