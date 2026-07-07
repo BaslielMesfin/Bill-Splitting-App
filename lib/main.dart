@@ -501,7 +501,9 @@ class _MainCanvasState extends State<MainCanvas> {
   // Launch camera snapshot
   Future<void> _takePicture() async {
     if (_cameraController == null || !_cameraController!.value.isInitialized) {
-      alert("Camera not initialized.");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Camera not initialized. Please try again.')),
+      );
       return;
     }
     
@@ -513,6 +515,16 @@ class _MainCanvasState extends State<MainCanvas> {
     try {
       final XFile file = await _cameraController!.takePicture();
       appState.imagePath = file.path;
+
+      // Check if API key is entered
+      if (appState.apiKey.trim().isEmpty) {
+        setState(() {
+          _loading = false;
+        });
+        _showApiKeyDialog(message: "A Gemini API Key is required to scan receipts automatically. Please enter your key below.");
+        return;
+      }
+
       await _parseReceiptOCR(file.path);
     } catch (e) {
       setState(() {
@@ -559,11 +571,15 @@ class _MainCanvasState extends State<MainCanvas> {
   }
 
   // Parse receipt using local google_generative_ai library
+  // Includes automatic retry with exponential backoff for 503/429 errors
   Future<void> _parseReceiptOCR(String path) async {
     setState(() {
       _loading = true;
+      _errorMsg = null;
     });
 
+    const int maxRetries = 3;
+    
     try {
       final file = File(path);
       final bytes = await file.readAsBytes();
@@ -611,8 +627,40 @@ Instructions:
         ])
       ];
 
-      final response = await model.generateContent(content);
-      final responseText = response.text;
+      // Retry loop with exponential backoff for 503/429 server errors
+      GenerateContentResponse? response;
+      for (int attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+          response = await model.generateContent(content);
+          break; // Success — exit retry loop
+        } catch (retryError) {
+          final errStr = retryError.toString();
+          final isRetryable = errStr.contains('503') || errStr.contains('429') || errStr.contains('UNAVAILABLE') || errStr.contains('overloaded');
+          
+          if (isRetryable && attempt < maxRetries) {
+            final waitSeconds = attempt * 2; // 2s, 4s
+            setState(() {
+              _errorMsg = null; // Clear any previous error
+            });
+            // Update loading message to show retry status
+            if (mounted) {
+              setState(() {
+                _errorMsg = 'Server busy — retrying in ${waitSeconds}s (attempt $attempt/$maxRetries)...';
+              });
+            }
+            await Future.delayed(Duration(seconds: waitSeconds));
+            if (mounted) {
+              setState(() {
+                _errorMsg = null;
+              });
+            }
+            continue;
+          }
+          rethrow; // Non-retryable error or last attempt — propagate to outer catch
+        }
+      }
+
+      final responseText = response?.text;
       
       if (responseText == null) {
         throw Exception("Failed to get response from Gemini Vision API.");
@@ -1511,20 +1559,27 @@ Instructions:
                       color: Colors.black87,
                       width: double.infinity,
                       height: double.infinity,
-                      child: const Column(
+                      child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          CircularProgressIndicator(color: Colors.blue),
-                          SizedBox(height: 16),
-                          Text('Reading receipt...', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                          SizedBox(height: 4),
-                          Text('OCR parsing via Gemini Vision', style: TextStyle(color: Color(0x80FFFFFF), fontSize: 11)),
+                          const CircularProgressIndicator(color: Colors.blue),
+                          const SizedBox(height: 16),
+                          Text(
+                            _errorMsg != null && _errorMsg!.contains('retrying') ? 'Server busy...' : 'Reading receipt...',
+                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            _errorMsg != null && _errorMsg!.contains('retrying') ? _errorMsg! : 'OCR parsing via Gemini Vision',
+                            style: const TextStyle(color: Color(0x80FFFFFF), fontSize: 11),
+                            textAlign: TextAlign.center,
+                          ),
                         ],
                       ),
                     ),
                     
-                  // error display
-                  if (_errorMsg != null)
+                  // error display (only when not loading — during retries, the spinner handles the message)
+                  if (_errorMsg != null && !_loading)
                     Container(
                       color: const Color(0xE6000000),
                       padding: const EdgeInsets.all(24),
