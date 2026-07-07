@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Assign Items - Fair Split</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-surface": "#303030",
+                      "background": "#f9f9f9",
+                      "secondary-fixed": "#cbe6ff",
+                      "tertiary": "#000000",
+                      "error-red": "#FF3B30",
+                      "error": "#ba1a1a",
+                      "surface-dim": "#dadada",
+                      "tertiary-fixed-dim": "#c4c7c9",
+                      "outline-variant": "#cfc4c5",
+                      "inverse-primary": "#c6c6c6",
+                      "on-surface-variant": "#4c4546",
+                      "on-tertiary-fixed": "#181c1e",
+                      "on-tertiary-fixed-variant": "#434749",
+                      "primary-fixed": "#e2e2e2",
+                      "on-background": "#1b1b1b",
+                      "surface-variant": "#e2e2e2",
+                      "on-surface": "#1b1b1b",
+                      "surface-container": "#eeeeee",
+                      "primary-fixed-dim": "#c6c6c6",
+                      "tertiary-container": "#181c1e",
+                      "on-secondary-container": "#2d5e80",
+                      "on-error-container": "#93000a",
+                      "surface-blue": "#E1EEF9",
+                      "success-green": "#28CD41",
+                      "primary-container": "#1b1b1b",
+                      "surface-tint": "#5e5e5e",
+                      "secondary-container": "#a8d7ff",
+                      "on-error": "#ffffff",
+                      "surface-container-high": "#e8e8e8",
+                      "on-primary-fixed-variant": "#474747",
+                      "primary": "#000000",
+                      "on-primary-fixed": "#1b1b1b",
+                      "accent-pink": "#FFB1C1",
+                      "surface-gray": "#F2F2F7",
+                      "outline": "#7e7576",
+                      "on-secondary-fixed-variant": "#144b6c",
+                      "on-tertiary": "#ffffff",
+                      "on-secondary-fixed": "#001e30",
+                      "surface-container-low": "#f3f3f3",
+                      "surface": "#f9f9f9",
+                      "on-tertiary-container": "#818486",
+                      "secondary-fixed-dim": "#9dccf3",
+                      "secondary": "#326385",
+                      "tertiary-fixed": "#e0e3e5",
+                      "surface-container-highest": "#e2e2e2",
+                      "inverse-on-surface": "#f1f1f1",
+                      "on-primary-container": "#848484",
+                      "on-secondary": "#ffffff",
+                      "surface-container-lowest": "#ffffff",
+                      "error-container": "#ffdad6",
+                      "on-primary": "#ffffff",
+                      "surface-bright": "#f9f9f9"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "stack-gap-sm": "12px",
+                      "container-padding": "24px",
+                      "unit": "8px",
+                      "stack-gap-md": "20px",
+                      "grid-gutter": "16px"
+              },
+              "fontFamily": {
+                      "headline-xl": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-md": ["Inter"],
+                      "numeric-display": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "serif": ["Playfair Display", "serif"]
+              },
+              "fontSize": {
+                      "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.03em", "fontWeight": "800"}],
+                      "headline-md": ["24px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "26px", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-lg-mobile": ["28px", {"lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                      "numeric-display": ["20px", {"lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: theme('colors.background');
+            -webkit-tap-highlight-color: transparent;
+        }
+        /* Hide scrollbar for clean aesthetic */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        .ambient-shadow {
+            box-shadow: 0 12px 40px -12px rgba(0,0,0,0.04);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="text-on-background antialiased relative min-h-screen pb-[140px] selection:bg-surface-blue selection:text-primary">
+<!-- TopAppBar JSON Component -->
+<header class="docked full-width top-0 sticky z-50 bg-surface/80 dark:bg-surface/80 backdrop-blur-xl flat no shadows text-primary dark:text-on-primary-fixed flex justify-between items-center px-container-padding h-16 w-full max-w-screen-xl mx-auto">
+<button class="hover:opacity-70 transition-opacity active:scale-95 duration-200 ease-out flex items-center justify-center w-10 h-10 rounded-full">
+<span class="material-symbols-outlined text-on-surface-variant dark:text-on-tertiary-container" data-icon="arrow_back" style="font-size: 24px;">arrow_back</span>
+</button>
+<h1 class="text-headline-md-mobile font-headline-md font-bold text-primary dark:text-on-primary-fixed">Fair Split</h1>
+<button class="hover:opacity-70 transition-opacity active:scale-95 duration-200 ease-out flex items-center justify-center w-10 h-10 rounded-full">
+<span class="material-symbols-outlined text-on-surface-variant dark:text-on-tertiary-container" data-icon="more_horiz" style="font-size: 24px;">more_horiz</span>
+</button>
+</header>
+<!-- Progress Indicator (Style Guidance requirement) -->
+<div class="w-full h-1 bg-surface-container-high absolute top-16 left-0 z-40">
+<div class="h-full bg-gradient-to-r from-[#3B82F6] to-[#60A5FA] w-[40%] transition-all duration-500 ease-out rounded-r-full"></div>
+</div>
+<!-- Main Canvas -->
+<main class="px-container-padding pt-stack-gap-md mx-auto max-w-md w-full flex flex-col gap-stack-gap-md mt-4">
+<!-- Context Area: Item Being Split (Bento-style Card) -->
+<section class="bg-surface-container-lowest rounded-[24px] ambient-shadow p-6 flex flex-col gap-4 relative overflow-hidden border border-surface-container/50">
+<!-- Decorative subtle shape in background -->
+<div class="absolute -right-8 -top-8 w-32 h-32 bg-surface-blue rounded-full blur-2xl opacity-40"></div>
+<div class="flex justify-between items-start z-10">
+<div class="flex flex-col gap-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Item 2 of 5</span>
+<h2 class="font-serif text-3xl font-bold text-primary tracking-tight">Margherita Pizza Large</h2>
+</div>
+<div class="bg-surface-gray px-3 py-1.5 rounded-lg flex items-center justify-center">
+<span class="font-numeric-display text-numeric-display text-primary tracking-tighter">x1</span>
+</div>
+</div>
+<div class="flex items-end justify-between mt-2 z-10">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined" style="font-size: 18px;">receipt_long</span>
+<span class="font-body-md text-body-md">Split equally or selectively</span>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-numeric-display text-[28px] leading-tight font-bold text-primary tracking-tighter">$24.50</span>
+<span class="font-label-sm text-label-sm text-outline">Total incl. tax</span>
+</div>
+</div>
+</section>
+<!-- Action Area: Participants Grid -->
+<section class="flex flex-col gap-stack-gap-sm mt-2">
+<div class="flex items-center justify-between px-2">
+<h3 class="font-serif text-lg font-bold text-on-surface-variant">Assign to</h3>
+<button class="font-label-md text-label-md text-primary hover:opacity-70 transition-opacity">Select All</button>
+</div>
+<div class="grid grid-cols-2 gap-grid-gutter">
+<!-- Selected Participant Chip -->
+<button class="group flex flex-col items-center justify-center gap-3 bg-surface-blue rounded-[20px] p-5 border-2 border-[#60A5FA] transition-all duration-200 active:scale-95 shadow-md shadow-blue-500/10 relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent opacity-50"></div>
+<div class="w-14 h-14 rounded-full overflow-hidden border-2 border-[#60A5FA] bg-surface-container relative shadow-sm">
+<img class="w-full h-full object-cover" data-alt="A close-up, brightly lit portrait of a young man with curly hair smiling warmly, set against a solid soft pastel yellow background. High-key lighting, modern clean aesthetic, clear details." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqoJ2lhCOFSZLYm9PpYkMnHAuwLh8mfD85q2QRE6CxJbEG4Q2ev2jNzW9c56DreEUHlwxGNzn9saMJxgPz_vIFKqjgxkip66yBsvenSFsaQAnoqBd-BiozCRsI4rEpSaxzgHupKbT0vNpZ5s0k10xVdlXa7eL9ix5PuArDfSIbJAo8lAqkkQBCNrRrV99PPlGK4CPc0uGDysjgh_hU_u8YBOgSjBm0gKb6PRBfDYHzLOwFCw-4OBhSZA"/>
+<!-- Selected checkmark indicator -->
+<div class="absolute -bottom-1 -right-1 bg-[#3B82F6] text-white rounded-full w-6 h-6 flex items-center justify-center border-2 border-surface-blue">
+<span class="material-symbols-outlined" style="font-size: 14px; font-variation-settings: 'wght' 700;">check</span>
+</div>
+</div>
+<span class="font-label-md text-label-md text-[#3B82F6] group-hover:text-tertiary transition-colors">Abebe</span>
+</button>
+<!-- Unselected Participant Chip -->
+<button class="group flex flex-col items-center justify-center gap-3 bg-surface-gray rounded-[20px] p-5 border-2 border-transparent transition-all duration-200 hover:bg-surface-container-high active:scale-95">
+<div class="w-14 h-14 rounded-full overflow-hidden border-2 border-transparent bg-surface-container shadow-sm">
+<img class="w-full h-full object-cover grayscale-[20%]" data-alt="A vibrant, modern portrait of a woman with stylish glasses and a subtle smile, looking directly at the camera. The background is a clean, neutral off-white. The lighting is soft and flattering, creating a premium lifestyle feel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuABMYWvcPYPgv91cglzDZQxuOune-6dvGiS1HmLaGepxDzKXfSnYN3I7IhgSfQqY8lbDY-K97zdFBg8vgkgpCNGgb5tIFYswFg5Qfp5VTfwXKkbOsNv6rFyMlnlpxaPe-5XGUHg5PN1jlW-e_5RUcK5DODIbuHz6w-fKWe86Hl2TcESj_cP5NjLGqiUtfZj6M-XfC8yWMu0l6igQNwKDPGpjjE0munjh0m--KinjlLYEXpwGB7QXs6vwQ"/>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant group-hover:text-primary transition-colors">Helina</span>
+</button>
+<!-- Unselected Participant Chip -->
+<button class="group flex flex-col items-center justify-center gap-3 bg-surface-gray rounded-[20px] p-5 border-2 border-transparent transition-all duration-200 hover:bg-surface-container-high active:scale-95">
+<div class="w-14 h-14 rounded-full overflow-hidden border-2 border-transparent bg-surface-container shadow-sm">
+<img class="w-full h-full object-cover grayscale-[20%]" data-alt="A candid, well-lit shot of a man in his thirties with a short beard, wearing a minimalist black t-shirt. Background is a soft, out-of-focus cafe interior with airy lighting. Editorial photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuATuu0LKOO4angJ48byDjDWbkE4MFWoYKHsApgHRRHcYuD0mnyeZwj9BhuaL5Rn4joqT9QLr0SlHqW_VBi4tWYhwTuTjw47zqjCnzC48nuXErf59N-qsd63K0fRX2Xco9aJ8QG4Kwrdjhp3fMXlq664QAqYt-T2lzh0uam-fE9gxuOEdaQmMqtpsGE9u8M7dj4dJUfBQLz3H_-eRAbpBHBBTiPwPNsHU2oE4znWItsQjAcWeDWRDsWJPg"/>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant group-hover:text-primary transition-colors">Dawit</span>
+</button>
+<!-- Unselected Participant Chip -->
+<button class="group flex flex-col items-center justify-center gap-3 bg-surface-gray rounded-[20px] p-5 border-2 border-transparent transition-all duration-200 hover:bg-surface-container-high active:scale-95">
+<div class="w-14 h-14 rounded-full overflow-hidden border-2 border-transparent bg-surface-container shadow-sm flex items-center justify-center bg-surface-dim">
+<span class="font-headline-md text-headline-md text-on-surface-variant">S</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant group-hover:text-primary transition-colors">Sara</span>
+</button>
+</div>
+</section>
+</main>
+<!-- Fixed Bottom Action Area (Transactional Flow = No Bottom Nav, just primary action) -->
+<div class="fixed bottom-0 left-0 w-full bg-surface/90 backdrop-blur-2xl border-t border-surface-container-high/50 p-container-padding pb-[max(24px,env(safe-area-inset-bottom))] z-50 flex flex-col gap-3">
+<div class="flex items-center justify-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-gray px-4 py-1.5 rounded-full">3 items remaining</span>
+</div>
+<button class="w-full bg-gradient-to-r from-[#3B82F6] to-[#60A5FA] text-white rounded-xl py-4 flex items-center justify-center gap-2 active:scale-95 transition-transform duration-200 ease-out ambient-shadow">
+<span class="font-label-md text-label-md">Next Item</span>
+<span class="material-symbols-outlined" style="font-size: 20px;">arrow_forward</span>
+</button>
+</div>
+</body></html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Fair Split - Home</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "inverse-surface": "#303030",
+                        "background": "#f9f9f9",
+                        "secondary-fixed": "#cbe6ff",
+                        "tertiary": "#000000",
+                        "error-red": "#FF3B30",
+                        "error": "#ba1a1a",
+                        "surface-dim": "#dadada",
+                        "tertiary-fixed-dim": "#c4c7c9",
+                        "outline-variant": "#cfc4c5",
+                        "inverse-primary": "#c6c6c6",
+                        "on-surface-variant": "#4c4546",
+                        "on-tertiary-fixed": "#181c1e",
+                        "on-tertiary-fixed-variant": "#434749",
+                        "primary-fixed": "#e2e2e2",
+                        "on-background": "#1b1b1b",
+                        "surface-variant": "#e2e2e2",
+                        "on-surface": "#1b1b1b",
+                        "surface-container": "#eeeeee",
+                        "primary-fixed-dim": "#c6c6c6",
+                        "tertiary-container": "#181c1e",
+                        "on-secondary-container": "#2d5e80",
+                        "on-error-container": "#93000a",
+                        "surface-blue": "#E1EEF9",
+                        "success-green": "#28CD41",
+                        "primary-container": "#1b1b1b",
+                        "surface-tint": "#5e5e5e",
+                        "secondary-container": "#a8d7ff",
+                        "on-error": "#ffffff",
+                        "surface-container-high": "#e8e8e8",
+                        "on-primary-fixed-variant": "#474747",
+                        "primary": "#000000",
+                        "on-primary-fixed": "#1b1b1b",
+                        "accent-pink": "#FFB1C1",
+                        "surface-gray": "#F2F2F7",
+                        "outline": "#7e7576",
+                        "on-secondary-fixed-variant": "#144b6c",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed": "#001e30",
+                        "surface-container-low": "#f3f3f3",
+                        "surface": "#f9f9f9",
+                        "on-tertiary-container": "#818486",
+                        "secondary-fixed-dim": "#9dccf3",
+                        "secondary": "#326385",
+                        "tertiary-fixed": "#e0e3e5",
+                        "surface-container-highest": "#e2e2e2",
+                        "inverse-on-surface": "#f1f1f1",
+                        "on-primary-container": "#848484",
+                        "on-secondary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-primary": "#ffffff",
+                        "surface-bright": "#f9f9f9"
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        "2xl": "1.25rem",
+                        "3xl": "1.75rem",
+                        full: "9999px"
+                    },
+                    spacing: {
+                        "stack-gap-sm": "12px",
+                        "container-padding": "24px",
+                        unit: "8px",
+                        "stack-gap-md": "20px",
+                        "grid-gutter": "16px",
+                        "safe-area-bottom": "env(safe-area-inset-bottom, 24px)"
+                    },
+                    fontFamily: {
+                        "headline-xl": ["Playfair Display", "serif"],
+                        "headline-md": ["Playfair Display", "serif"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Playfair Display", "serif"],
+                        "headline-lg-mobile": ["Playfair Display", "serif"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "numeric-display": ["Inter"],
+                        "label-sm": ["Inter"]
+                    },
+                    fontSize: {
+                        "headline-xl": ["40px", { lineHeight: "48px", letterSpacing: "-0.03em", fontWeight: "800" }],
+                        "headline-md": ["24px", { lineHeight: "28px", letterSpacing: "-0.01em", fontWeight: "700" }],
+                        "body-lg": ["18px", { lineHeight: "26px", fontWeight: "400" }],
+                        "headline-lg": ["32px", { lineHeight: "38px", letterSpacing: "-0.02em", fontWeight: "700" }],
+                        "headline-lg-mobile": ["28px", { lineHeight: "34px", letterSpacing: "-0.02em", fontWeight: "700" }],
+                        "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+                        "label-md": ["14px", { lineHeight: "20px", letterSpacing: "0.01em", fontWeight: "600" }],
+                        "numeric-display": ["20px", { lineHeight: "24px", letterSpacing: "-0.01em", fontWeight: "700" }],
+                        "label-sm": ["12px", { lineHeight: "16px", letterSpacing: "0.02em", fontWeight: "500" }]
+                    },
+                    boxShadow: {
+                        'ambient': '0 12px 30px -8px rgba(0, 0, 0, 0.03)',
+                        'ambient-hover': '0 16px 40px -8px rgba(0, 0, 0, 0.05)'
+                    }
+                }
+            }
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer utilities {
+            .pb-safe-area { padding-bottom: env(safe-area-inset-bottom, 24px); }
+            .pt-safe-area { padding-top: env(safe-area-inset-top, 0px); }
+            .hide-scrollbar::-webkit-scrollbar { display: none; }
+            .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        }
+        
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col md:bg-surface-gray">
+<!-- Mobile Container (Simulating app view on larger screens) -->
+<div class="md:max-w-[400px] md:mx-auto md:bg-background md:min-h-screen md:shadow-2xl md:relative overflow-hidden w-full h-full flex flex-col">
+<!-- TopAppBar Shared Component -->
+<header class="flex justify-between items-center px-container-padding h-16 w-full bg-surface/80 dark:bg-surface/80 backdrop-blur-xl docked full-width top-0 sticky z-50 pt-safe-area flat no shadows">
+<button aria-label="Go back" class="text-on-surface-variant dark:text-on-tertiary-container hover:opacity-70 transition-opacity active:scale-95 duration-200 ease-out">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="text-headline-md-mobile font-headline-md font-bold text-primary dark:text-on-primary-fixed truncate px-4">Fair Split</h1>
+<button aria-label="More options" class="text-on-surface-variant dark:text-on-tertiary-container hover:opacity-70 transition-opacity active:scale-95 duration-200 ease-out">
+<span class="material-symbols-outlined" data-icon="more_horiz">more_horiz</span>
+</button>
+</header>
+<!-- Main Canvas -->
+<main class="flex-1 overflow-y-auto pb-[100px] hide-scrollbar">
+<!-- Hero Section -->
+<section class="px-container-padding py-stack-gap-md relative">
+<div class="relative w-full h-[400px] rounded-[40px] overflow-hidden mb-6 bg-surface-blue shadow-ambient">
+<img class="w-full h-full object-cover absolute inset-0 z-0" data-alt="A lively overhead shot of friends sharing a large, messy Italian dinner at a warm, dimly lit restaurant. Hands are reaching for slices of pizza and bowls of pasta. The lighting is warm and inviting, suggesting a fun, communal dining experience perfect for splitting a bill. High quality, editorial lifestyle photography." src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"/>
+<!-- Gradient Overlay -->
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent z-10"></div>
+<!-- Hero Content -->
+<div class="absolute bottom-0 left-0 w-full p-6 z-20 text-on-primary">
+<h2 class="text-headline-lg-mobile font-headline-lg-mobile text-white mb-2 shadow-sm">Dinner with friends</h2>
+<p class="text-body-md font-body-md text-white/90 mb-6">Split bills effortlessly. No awkward math required.</p>
+<button class="w-full bg-white text-primary rounded-full py-4 px-6 text-label-md font-label-md flex justify-center items-center gap-2 hover:bg-surface-gray transition-colors active:scale-[0.98] duration-150 shadow-lg">
+<span class="material-symbols-outlined filled" data-icon="add_circle">add_circle</span>
+                            New Split
+                        </button>
+</div>
+</div>
+</section>
+<!-- Recent Splits Section -->
+<section class="px-container-padding pb-stack-gap-md">
+<div class="flex justify-between items-end mb-4">
+<h3 class="text-headline-md-mobile font-headline-md text-on-background">Recent Splits</h3>
+<button class="text-label-md font-label-md text-on-surface-variant hover:text-primary transition-colors">View All</button>
+</div>
+<div class="flex flex-col gap-4">
+<!-- Split Card 1 -->
+<div class="bg-surface-container-lowest rounded-3xl p-5 shadow-ambient hover:shadow-ambient-hover transition-shadow cursor-pointer flex flex-col gap-3">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-full bg-surface-blue flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined" data-icon="restaurant">restaurant</span>
+</div>
+<div>
+<h4 class="text-label-md font-label-md text-on-background">La Piazza Dinner</h4>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Yesterday • 4 people</p>
+</div>
+</div>
+<div class="text-right">
+<span class="text-numeric-display font-numeric-display text-on-background block">$145.50</span>
+<span class="text-label-sm font-label-sm text-success-green bg-success-green/10 px-2 py-0.5 rounded-full inline-block mt-1">Settled</span>
+</div>
+</div>
+<!-- Participant avatars overlap -->
+<div class="flex items-center -space-x-2 mt-2">
+<img class="w-8 h-8 rounded-full border-2 border-surface-container-lowest object-cover z-30" data-alt="A small, professional headshot portrait of a smiling woman with glasses, brightly lit against a neutral background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrmtWCK60WLcVCsbn8WwwMfBCexaj1rA_Hlnd3CqC3GzBcHgEPG4dtL-30FOIxcc6lSo5F4U59QW2H6AkPNoj-Fo2XXD9DTHqmPGiYsradAbYiSmVlh3Vios4kJTvHjHCVjb1Yr7Ss2STmru7Zlc21WLhtuxPVFhxpDfsMzuVc_e3T079eq3wxwCjPtKNJg0kSZnOZA1Qu4YCKoCnN0WRu4RxY3F0sD3v8umJWgK5tJ3KeUSM3EJa_5A"/>
+<img class="w-8 h-8 rounded-full border-2 border-surface-container-lowest object-cover z-20" data-alt="A small, professional headshot portrait of a smiling young man with dark hair, brightly lit against a neutral background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIVFOz5zzWN30g9qxAlvus-GMh2uYfjc4Srlh8nqEOujYzEiKU-cIVTovXQ8NwgRqS-EjufJ6Sef_icG54EwvF_1U_TPXhEla8DtKyJRXYOs-Qaa68dNxwjwzIU7JkxUkWZrMv-Nsb6adXsOA66mvpJlaggtjiq4EVsTt8S7-4yGh1uRvJxdy8viypf84OVY205q1oHf2O27zO4t-CFJifUAZI58M4rNfHhouQ6O_Y1vAlFh2Ert11xw"/>
+<img class="w-8 h-8 rounded-full border-2 border-surface-container-lowest object-cover z-10" data-alt="A small, professional headshot portrait of a cheerful person with short hair, brightly lit against a neutral background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGOYcTbidZqeeO9cYSb5ni2HMUMl1PFfdwKCNoaUkDa7pa2gnmTFhwWNBPnoWaOpumda7Hdaw9hImADdOYhXpxErPJ4U_GviKngEknzkj-qvrhLazVCGyth_8_qQ9euP8_dd9bGeU51fyvr4-dLN_HI7Wh3IEEAmyUxPNXnDedgKd4pETI1gAGSuOzWzk6H-D7UhToieQhCCFOZHaosflJ-KpHVMHWome267JAkg3IQ4M2Zt6-W3u9Iw"/>
+<div class="w-8 h-8 rounded-full border-2 border-surface-container-lowest bg-surface-gray flex items-center justify-center text-[10px] font-bold text-on-surface-variant z-0">+1</div>
+</div>
+</div>
+<!-- Split Card 2 -->
+<div class="bg-surface-container-lowest rounded-3xl p-5 shadow-ambient hover:shadow-ambient-hover transition-shadow cursor-pointer flex flex-col gap-3">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-full bg-accent-pink/20 flex items-center justify-center text-error-red">
+<span class="material-symbols-outlined" data-icon="local_cafe">local_cafe</span>
+</div>
+<div>
+<h4 class="text-label-md font-label-md text-on-background">Morning Coffee</h4>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Dec 10 • 2 people</p>
+</div>
+</div>
+<div class="text-right">
+<span class="text-numeric-display font-numeric-display text-on-background block">$18.20</span>
+<span class="text-label-sm font-label-sm text-error-red bg-error-red/10 px-2 py-0.5 rounded-full inline-block mt-1">Pending</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar Shared Component -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-6 py-4 pb-safe-area bg-surface/90 dark:bg-inverse-surface/90 backdrop-blur-2xl shadow-[0_-4px_20px_rgba(0,0,0,0.05)] shadow-lg rounded-t-xl z-50 md:absolute">
+<!-- Home (Active) -->
+<button class="flex flex-col items-center justify-center bg-gradient-to-r from-[#3B82F6] to-[#60A5FA] text-white rounded-full px-6 py-1.5 hover:opacity-90 transition-opacity active:scale-90 duration-150 ease-in-out group">
+<span class="material-symbols-outlined filled mb-1" data-icon="home">home</span>
+<span class="text-label-sm font-label-sm">Home</span>
+</button>
+<!-- Activity (Inactive) -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-tertiary-container px-6 py-1.5 hover:bg-surface-container-high dark:hover:bg-tertiary-container transition-colors active:scale-90 duration-150 ease-in-out rounded-full group">
+<span class="material-symbols-outlined mb-1 group-hover:text-primary transition-colors" data-icon="receipt_long">receipt_long</span>
+<span class="text-label-sm font-label-sm group-hover:text-primary transition-colors">Activity</span>
+</button>
+<!-- Profile (Inactive) -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-tertiary-container px-6 py-1.5 hover:bg-surface-container-high dark:hover:bg-tertiary-container transition-colors active:scale-90 duration-150 ease-in-out rounded-full group">
+<span class="material-symbols-outlined mb-1 group-hover:text-primary transition-colors" data-icon="person">person</span>
+<span class="text-label-sm font-label-sm group-hover:text-primary transition-colors">Profile</span>
+</button>
+</nav>
+</div>
+</body></html>
