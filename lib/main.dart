@@ -445,6 +445,7 @@ class _MainCanvasState extends State<MainCanvas> {
   String _activeScreen = 'home'; // home, capture, review, participants, assign, summary
   bool _loading = false;
   String? _errorMsg;
+  Map<String, dynamic>? _selectedHistorySplit;
 
   // Active Assignment Index (for item-by-item selection)
   int _activeUnitIndex = 0;
@@ -1194,6 +1195,209 @@ Instructions:
     );
   }
 
+
+  Widget _buildHistoryDetailScreen() {
+    if (_selectedHistorySplit == null) {
+      return const Center(child: Text('No split selected'));
+    }
+
+    final String merchant = _selectedHistorySplit!['merchantName'] as String;
+    final String dateStr = _selectedHistorySplit!['date'] as String;
+    final int total = _selectedHistorySplit!['total'] as int;
+    final List<dynamic> results = _selectedHistorySplit!['results'] as List<dynamic>;
+
+    return Column(
+      children: [
+        // Header
+        SafeArea(
+          bottom: false,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_back, color: Colors.black),
+                  onPressed: () => setState(() => _activeScreen = 'home'),
+                ),
+                Text('Split Details', style: GoogleFonts.playfairDisplay(fontSize: 16, fontWeight: FontWeight.bold)),
+                const SizedBox(width: 48),
+              ],
+            ),
+          ),
+        ),
+
+        // Scroll content
+        Expanded(
+          child: ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            physics: const BouncingScrollPhysics(),
+            children: [
+              const SizedBox(height: 12),
+              
+              // Total target card
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(28),
+                  border: Border.all(color: const Color(0xFFEEEEEE)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.02),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    )
+                  ]
+                ),
+                child: Column(
+                  children: [
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFE1EEF9),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.restaurant, size: 22, color: Color(0xFF326385)),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      merchant,
+                      style: GoogleFonts.playfairDisplay(fontSize: 20, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      dateStr,
+                      style: const TextStyle(fontSize: 11, color: Colors.grey),
+                    ),
+                    const SizedBox(height: 16),
+                    const Divider(color: Color(0xFFF1F1F1)),
+                    const SizedBox(height: 12),
+                    const Text('TOTAL BILL', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 1)),
+                    const SizedBox(height: 4),
+                    Text(
+                      '${total.toStringAsFixed(2)} ETB',
+                      style: GoogleFonts.playfairDisplay(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              // Breakdown header
+              Text('People & Shares', style: GoogleFonts.playfairDisplay(fontSize: 16, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 12),
+
+              // list of participants results cards
+              ...results.map((res) {
+                final String name = res['participantName'] as String;
+                final double totalOwed = (res['totalOwed'] as num).toDouble();
+                final double subtotal = (res['itemSubtotal'] as num).toDouble();
+                final double serviceShare = (res['serviceChargeShare'] as num).toDouble();
+                final double taxShare = (res['taxShare'] as num).toDouble();
+
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  padding: const EdgeInsets.all(18),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(color: const Color(0xFFEEEEEE)),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                          Text(
+                            '${totalOwed.toStringAsFixed(2)} ETB',
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF326385)),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      const Divider(color: Color(0xFFF9F9F9), height: 1),
+                      const SizedBox(height: 12),
+                      _buildBreakdownRow('Items Subtotal', subtotal),
+                      const SizedBox(height: 6),
+                      _buildBreakdownRow('Service Charge Share', serviceShare),
+                      const SizedBox(height: 6),
+                      _buildBreakdownRow('VAT Share', taxShare),
+                    ],
+                  ),
+                );
+              }).toList(),
+
+              const SizedBox(height: 120),
+            ],
+          ),
+        ),
+
+        // Action Share
+        Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: ElevatedButton.icon(
+            onPressed: () {
+              final text = _getHistoryShareText(_selectedHistorySplit!);
+              Clipboard.setData(ClipboardData(text: text));
+              alert('Split breakdown copied to clipboard! Ready to share.');
+            },
+            icon: const Icon(Icons.share, size: 16),
+            label: const Text('Share Breakdown', style: TextStyle(fontWeight: FontWeight.bold)),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.black,
+              foregroundColor: Colors.white,
+              minimumSize: const Size(double.infinity, 54),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9999)),
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _buildBreakdownRow(String label, double value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(label, style: const TextStyle(fontSize: 11, color: Colors.grey)),
+        Text('${value.toStringAsFixed(2)} ETB', style: const TextStyle(fontSize: 11, color: Colors.black87)),
+      ],
+    );
+  }
+
+  String _getHistoryShareText(Map<String, dynamic> split) {
+    final String merchant = split['merchantName'] as String;
+    final String dateStr = split['date'] as String;
+    final int total = split['total'] as int;
+    final List<dynamic> results = split['results'] as List<dynamic>;
+
+    String text = "🧾 *Fair Split Breakdown — $merchant*\n";
+    text += "📅 Date: $dateStr\n";
+    text += "💰 Total Bill: $total ETB\n";
+    text += "---------------------------\n";
+
+    for (final res in results) {
+      final name = res['participantName'] as String;
+      final double totalOwed = (res['totalOwed'] as num).toDouble();
+      final double subtotal = (res['itemSubtotal'] as num).toDouble();
+      final double serviceShare = (res['serviceChargeShare'] as num).toDouble();
+      final double taxShare = (res['taxShare'] as num).toDouble();
+
+      text += "👤 *$name* owes *${totalOwed.toStringAsFixed(2)} ETB*\n";
+      text += "  Items Subtotal: ${subtotal.toStringAsFixed(2)} ETB\n";
+      text += "  Service Charge Share: ${serviceShare.toStringAsFixed(2)} ETB\n";
+      text += "  VAT Share: ${taxShare.toStringAsFixed(2)} ETB\n\n";
+    }
+    text += "Generated with Fair Split App.";
+    return text;
+  }
+
   void alert(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(msg), behavior: SnackBarBehavior.floating),
@@ -1288,6 +1492,8 @@ Instructions:
         return _buildAssignScreen();
       case 'summary':
         return _buildSummaryScreen();
+      case 'history_detail':
+        return _buildHistoryDetailScreen();
       default:
         return _buildHomeScreen();
     }
@@ -1307,10 +1513,7 @@ Instructions:
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                IconButton(
-                  icon: const Icon(Icons.settings, color: Colors.black),
-                  onPressed: () => _showApiKeyDialog(),
-                ),
+                const SizedBox(width: 48),
                 Text('Fair Split', style: GoogleFonts.playfairDisplay(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black)),
                 IconButton(
                   icon: const Icon(Icons.more_horiz, color: Colors.grey),
@@ -1419,14 +1622,21 @@ Instructions:
                 )
               else
                 ...appState.recentSplits.map((split) {
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 12),
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(24),
-                      border: Border.all(color: const Color(0xFFEEEEEE)),
-                    ),
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _selectedHistorySplit = split;
+                        _activeScreen = 'history_detail';
+                      });
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: 12),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(color: const Color(0xFFEEEEEE)),
+                      ),
                     child: Column(
                       children: [
                         Row(
@@ -1473,8 +1683,9 @@ Instructions:
                         )
                       ],
                     ),
-                  );
-                }),
+                  ),
+                );
+              }),
               
               const SizedBox(height: 96), // Spacer for bottom navigation
             ],
