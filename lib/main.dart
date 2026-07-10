@@ -276,28 +276,14 @@ class AppState extends ChangeNotifier {
   void initializeUnits() {
     final List<ReceiptUnit> generated = [];
     for (final item in lineItems) {
-      final qty = item.quantity;
-      if (qty <= 1) {
-        // preserve existing if matching ID exists
-        final existing = units.firstWhere((u) => u.id == item.id, orElse: () => ReceiptUnit(id: '', description: '', unitPrice: 0, assignments: []));
-        generated.add(ReceiptUnit(
-          id: item.id,
-          description: item.description,
-          unitPrice: item.unitPrice,
-          assignments: existing.id.isNotEmpty ? existing.assignments : [],
-        ));
-      } else {
-        for (int i = 0; i < qty; i++) {
-          final unitId = '${item.id}_unit_$i';
-          final existing = units.firstWhere((u) => u.id == unitId, orElse: () => ReceiptUnit(id: '', description: '', unitPrice: 0, assignments: []));
-          generated.add(ReceiptUnit(
-            id: unitId,
-            description: '${item.description} (${i + 1}/$qty)',
-            unitPrice: item.unitPrice,
-            assignments: existing.id.isNotEmpty ? existing.assignments : [],
-          ));
-        }
-      }
+      // preserve existing if matching ID exists
+      final existing = units.firstWhere((u) => u.id == item.id, orElse: () => ReceiptUnit(id: '', description: '', unitPrice: 0, assignments: []));
+      generated.add(ReceiptUnit(
+        id: item.id,
+        description: item.quantity > 1 ? '${item.description} (x${item.quantity})' : item.description,
+        unitPrice: item.amount, // Group total amount of the item
+        assignments: existing.id.isNotEmpty ? existing.assignments : [],
+      ));
     }
     units = generated;
     notifyListeners();
@@ -2466,7 +2452,7 @@ Instructions:
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                           decoration: BoxDecoration(color: const Color(0xFFF2F2F7), borderRadius: BorderRadius.circular(8)),
-                          child: const Text('Unit Price', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Colors.grey)),
+                          child: const Text('Item Total', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Colors.grey)),
                         ),
                       ],
                     ),
